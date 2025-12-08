@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "ats_analysis": {
+    "score": 85,
+    "feedback": ["Missing keywords: Python, AWS", "Format is too complex for old ATS"],
+    "match_summary": "Strong experience match, but technical keywords are placed too low."
+  },
+  "plagiarism_analysis": {
+    "score": 5,
+    "sources_detected": ["http://www.generic-job-description.com/"],
+    "detail": "5% of text matched a generic online job description."
+  },
+  "improvement_suggestions": [
+    { "original": "Responsible for managing team projects.", "improved": "Led a 5-person team, resulting in a 15% increase in project delivery speed." },
+    // ... more suggestions
+  ]
+}
