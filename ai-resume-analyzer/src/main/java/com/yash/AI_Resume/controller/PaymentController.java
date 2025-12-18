@@ -20,37 +20,37 @@ import static com.yash.AI_Resume.utils.AppConstants.*;
 @RequiredArgsConstructor
 @RequestMapping(PAYMENT)
 @Slf4j
-public class PaymentController{
+public class PaymentController {
 
     private final PaymentService paymentService;
     private final ResponseErrorHandler responseErrorHandler;
 
     @PostMapping(CREATE_ORDER)
-    public ResponseEntity<?> createOrder(@RequestBody Map<String, String> request, Authentication authentication) throws RazorpayException {
-        //0.Validate the request
+    public ResponseEntity<?> createOrder(@RequestBody Map<String, String> request, Authentication authentication)
+            throws RazorpayException {
+        // 0.Validate the request
         String planType = request.get("planType");
-        if(!PREMIUM.equals(planType)){
+        if (!PREMIUM.equals(planType)) {
             return ResponseEntity.badRequest().body(Map.of("message", "Invalid plan type"));
         }
 
-        //1. call teh service method
+        // 1. call teh service method
         Payment payment = paymentService.createOrder(authentication.getPrincipal(), planType);
 
-        //2. prepare the response object
+        // 2. prepare the response object
         Map<String, Object> response = Map.of(
                 "receipt", payment.getReceipt(),
                 "currency", payment.getCurrency(),
                 "amount", payment.getAmount(),
-                "orderId", payment.getRazorpayOrderId()
-                );
+                "orderId", payment.getRazorpayOrderId());
 
-        //3. return the response
+        // 3. return the response
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(VERIFY)
     public ResponseEntity<?> verifyPayment(@RequestBody Map<String, String> request) throws RazorpayException {
-        //1. Validate the request
+        // 1. Validate the request
         String razorpayOrderId = request.get("razorpay_order_id");
         String razorpayPaymentId = request.get("razorpay_payment_id");
         String razorpaySignature = request.get("razorpay_signature");
@@ -61,13 +61,12 @@ public class PaymentController{
             return ResponseEntity.badRequest().body(Map.of("message", "Missing required payment parameters"));
         }
 
-        //2.Call  the service method
-        boolean isValid = paymentService.verifyPayment(razorpayOrderId,razorpayPaymentId,razorpaySignature);
+        // 2.Call the service method
+        boolean isValid = paymentService.verifyPayment(razorpayOrderId, razorpayPaymentId, razorpaySignature);
 
-
-        //3. return the response
-        if(!isValid){
-            return ResponseEntity.badRequest().body(Map.of(
+        // 3. return the response
+        if (isValid) {
+            return ResponseEntity.ok(Map.of(
                     "message", "Payment verified successfully",
                     "status", "success"));
         } else {
@@ -76,22 +75,27 @@ public class PaymentController{
     }
 
     @GetMapping(HISTORY)
-    public ResponseEntity<?> getPaymentHistory(Authentication authentication){
-        //Step 1: Call the service
+    public ResponseEntity<?> getPaymentHistory(Authentication authentication) {
+        // Step 1: Call the service
         List<Payment> payments = paymentService.getUserPayments(authentication.getPrincipal());
 
-        //Step 2: return the response
+        // Step 2: return the response
         return ResponseEntity.ok(payments);
     }
 
     @GetMapping(ORDER_DETAILS)
-    public ResponseEntity<?> getOrderDetails(@PathVariable String orderId){
-        //1. Call the service method
+    public ResponseEntity<?> getOrderDetails(@PathVariable String orderId) {
+        // 1. Call the service method
         Payment paymentDetails = paymentService.getPaymentDetails(orderId);
 
-        //2. return response
+        // 2. return response
         return ResponseEntity.ok(paymentDetails);
 
+    }
+
+    @GetMapping("/key")
+    public ResponseEntity<?> getRazorpayKey() {
+        return ResponseEntity.ok(Map.of("key", paymentService.getRazorpayKey()));
     }
 
 }

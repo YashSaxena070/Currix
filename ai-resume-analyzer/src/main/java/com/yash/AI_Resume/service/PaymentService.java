@@ -37,28 +37,30 @@ public class PaymentService {
     private String razorpayKeySecret;
 
     public Payment createOrder(Object principal, String planType) throws RazorpayException {
-        //Initial Step
+        // Initial Step
         AuthResponse authResponse = authService.getProfile(principal);
 
-        //Step 1: Initialize the razorpay client
+        // Step 1: Initialize the razorpay client
         RazorpayClient razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
 
-        //Step 2: Pepare the JSON object to pass the razorpay
-        int amount = 99900; //Amount in paise
+        // Step 2: Pepare the JSON object to pass the razorpay
+        int amount = 0;
+        if (PREMIUM.equals(planType)) {
+            amount = 49900;
+        }
+
         String currency = "INR";
-        String receipt = PREMIUM+"_"+ UUID.randomUUID().toString().substring(0,8);
+        String receipt = planType + "_" + UUID.randomUUID().toString().substring(0, 8);
 
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", amount);
         orderRequest.put("currency", currency);
         orderRequest.put("receipt", receipt);
 
-
-        //Step 3: Call the razorpay API to create order
+        // Step 3: Call the razorpay API to create order
         Order razorpayOrder = razorpayClient.orders.create(orderRequest);
 
-
-        //Step 4: Save the order details into database
+        // Step 4: Save the order details into database
         Payment newPayment = Payment.builder()
                 .userId(authResponse.getId())
                 .razorpayOrderId(razorpayOrder.get("id"))
@@ -69,23 +71,23 @@ public class PaymentService {
                 .status("created")
                 .build();
 
-
-        //Step 5: return the result
+        // Step 5: return the result
         return paymentRepository.save(newPayment);
 
     }
 
-    public boolean verifyPayment(String razorpayOrderId, String razorpayPaymentId , String razorpaySignature) throws RazorpayException {
-        try{
+    public boolean verifyPayment(String razorpayOrderId, String razorpayPaymentId, String razorpaySignature)
+            throws RazorpayException {
+        try {
             JSONObject attributes = new JSONObject();
-            attributes.put("razorpayOrderId", razorpayOrderId);
-            attributes.put("razorpayPaymentId", razorpayPaymentId);
-            attributes.put("razorpaySignature", razorpaySignature);
+            attributes.put("razorpay_order_id", razorpayOrderId);
+            attributes.put("razorpay_payment_id", razorpayPaymentId);
+            attributes.put("razorpay_signature", razorpaySignature);
 
             boolean isValidSignature = Utils.verifyPaymentSignature(attributes, razorpayKeySecret);
 
-            if(isValidSignature){
-                //update the payment status
+            if (isValidSignature) {
+                // update the payment status
                 Payment payment = paymentRepository.findByRazorpayOrderId(razorpayOrderId)
                         .orElseThrow(() -> new RuntimeException("Payment not found"));
 
@@ -94,12 +96,12 @@ public class PaymentService {
                 payment.setStatus("paid");
                 paymentRepository.save(payment);
 
-                //upgrade the user subscription
+                // upgrade the user subscription
                 upgradeUserSubscription(payment.getUserId(), payment.getPlanType());
                 return true;
             }
             return false;
-        } catch(Exception e){
+        } catch (Exception e) {
             log.error("Error in verifying the payment", e);
             return false;
         }
@@ -113,17 +115,20 @@ public class PaymentService {
         log.info("User {} upgraded to {} plan", userId, planType);
     }
 
-
     public List<Payment> getUserPayments(Object principal) {
-        //1. get the current profile
+        // 1. get the current profile
         AuthResponse authResponse = authService.getProfile(principal);
 
-        //2. Call teh repo finder method
+        // 2. Call teh repo finder method
         return paymentRepository.findByUserIdOrderByCreatedAtDesc(authResponse.getId());
     }
 
     public Payment getPaymentDetails(String orderId) {
         return paymentRepository.findByRazorpayOrderId(orderId)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
+    }
+
+    public String getRazorpayKey() {
+        return razorpayKeyId;
     }
 }

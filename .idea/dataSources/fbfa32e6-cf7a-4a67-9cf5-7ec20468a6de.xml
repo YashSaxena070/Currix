@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="ai-resume-analyzer@cluster0.9bmzjjg.mongodb.net">
+  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.53">
+    <root id="1">
+      <ServerVersion>8.0.16</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="admin"/>
+    <schema id="3" parent="1" name="journaldb"/>
+    <schema id="4" parent="1" name="local"/>
+    <schema id="5" parent="1" name="resumeBuilder"/>
+  </database-model>
+</dataSource>

@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8a228fa-476b-43f1-a3d3-7423ed61f8b7" name="Changes" comment="" />
+    <list default="true" id="d8a228fa-476b-43f1-a3d3-7423ed61f8b7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/config/DotEnvConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/config/DotEnvConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/controller/PaymentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/service/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/service/PaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/postcss.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/postcss.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/src/main.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/src/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/src/store.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-analyzer-ui/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/resume-analyzer-ui/tailwind.config.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,10 +29,19 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
+        <option value="Exception" />
         <option value="Class" />
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -27,22 +52,30 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven.ai-resume-analyzer [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ai-resume-analyzer [compile].executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.AiResumeAnalyzerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Yash/Desktop/AI resume analyzer&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Yash/Desktop/SpringSecurity/demo&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
   <component name="RunManager">
     <configuration name="AiResumeAnalyzerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
@@ -71,11 +104,39 @@
       <updated>1764274541098</updated>
       <workItem from="1764274542235" duration="539000" />
       <workItem from="1764275121526" duration="5545000" />
-      <workItem from="1765215598657" duration="1195000" />
+      <workItem from="1765215598657" duration="3003000" />
+      <workItem from="1765218935423" duration="501000" />
+      <workItem from="1765219516281" duration="1117000" />
+      <workItem from="1765257238980" duration="1061000" />
+      <workItem from="1765294301507" duration="8279000" />
+      <workItem from="1765339230525" duration="546000" />
+      <workItem from="1765429501220" duration="723000" />
+      <workItem from="1765430249873" duration="352000" />
+      <workItem from="1765552844109" duration="178000" />
+      <workItem from="1765617831828" duration="1449000" />
+      <workItem from="1765619635499" duration="3162000" />
+      <workItem from="1765622881675" duration="10945000" />
+      <workItem from="1765686567941" duration="9492000" />
+      <workItem from="1765697527795" duration="6000" />
+      <workItem from="1765697566921" duration="3177000" />
+      <workItem from="1765700879936" duration="9168000" />
+      <workItem from="1765788754763" duration="43000" />
+      <workItem from="1765815855778" duration="6834000" />
+      <workItem from="1765859785616" duration="2626000" />
+      <workItem from="1765894364459" duration="11551000" />
+      <workItem from="1765948309556" duration="18874000" />
+      <workItem from="1765985099259" duration="4722000" />
+      <workItem from="1766034343755" duration="51000" />
+      <workItem from="1766036473042" duration="15000" />
+      <workItem from="1766044122968" duration="7036000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
