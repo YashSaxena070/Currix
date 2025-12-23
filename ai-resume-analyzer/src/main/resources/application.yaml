@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: env
   application:
     name: ai-resume-analyzer
 
@@ -52,7 +50,7 @@ spring:
 
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 app:
   base:
@@ -71,3 +69,19 @@ razorpay:
   key:
     id: ${RAZORPAY_KEY_ID}
     secret: ${RAZORPAY_KEY_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+  health:
+    probes:
+      enabled: true
+    mail:
+      health:
+        enabled: false
+    
