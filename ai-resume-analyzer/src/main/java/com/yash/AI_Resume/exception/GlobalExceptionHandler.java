@@ -16,13 +16,13 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex){
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         log.info("Inside GlobalExceptionHandler - handleValidationExceptions()");
         Map<String, Object> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
-           String fieldName = ((FieldError)error).getField();
-           String errorMessage = error.getDefaultMessage();
-           errors.put(fieldName, errorMessage);
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
         });
 
         Map<String, Object> response = new HashMap<>();
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceExistsException(ResourceExistsException ex){
+    public ResponseEntity<Map<String, Object>> handleResourceExistsException(ResourceExistsException ex) {
         log.info("Inside GlobalExceptionHandler - handleResourceExistsException()");
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Resource exists");
@@ -43,13 +43,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex){
-        log.info("Inside GlobalExceptionHandler - handleGenericException()");
+    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+
+        log.error("🔥 GLOBAL EXCEPTION CAUGHT", ex);
+
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Something went wrong. Contact administrator");
-        response.put("errors", ex.getMessage());
+        response.put("error", ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 
 }
