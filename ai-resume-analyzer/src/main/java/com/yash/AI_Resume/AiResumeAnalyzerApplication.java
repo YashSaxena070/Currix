@@ -7,14 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AiResumeAnalyzerApplication {
 
 	public static void main(String[] args) {
-		// Try to load application-env.properties, fallback to .env
+		// Try to load application-env.txt, fallback to .env
 		// Check multiple locations: current dir, project root (if running from parent),
 		// and src/main/resources
 		String[] configFiles = {
-				"./application-env.properties",
+				"./application-env.txt",
 				"./.env",
-				"ai-resume-analyzer/application-env.properties",
-				"src/main/resources/application-env.properties"
+				"ai-resume-analyzer/application-env.txt",
+				"src/main/resources/application-env.txt"
 		};
 		boolean loaded = false;
 
@@ -51,7 +51,7 @@ public class AiResumeAnalyzerApplication {
 				for (String filePath : configFiles) {
 					System.err.println(" - " + new java.io.File(filePath).getAbsolutePath());
 				}
-				System.err.println("Please ensure 'application-env.properties' exists in one of these locations.");
+				System.err.println("Please ensure 'application-env.txt' exists in one of these locations.");
 				System.exit(1);
 			}
 
