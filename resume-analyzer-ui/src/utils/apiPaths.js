@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "https://currix.onrender.com";
 
 // utils/apiPaths.js
 export const API_PATHS = {
