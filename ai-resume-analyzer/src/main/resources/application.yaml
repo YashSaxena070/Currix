@@ -1,0 +1,69 @@
+spring:
+  profiles:
+    active: env
+  application:
+    name: ai-resume-analyzer
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  mail:
+    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          from: ${SPRING_MAIL_FROM}
+    protocol: smtp
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/ai-resume-analyzer}
+
+  ai:
+    groq:
+      api-key: ${SPRING_AI_GROQ_API_KEY}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - user:email
+              - read:user
+
+
+server:
+  port: 8080
+
+app:
+  base:
+    url: ${APP_BASE_URL:http://localhost:8080}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:604800000}
+

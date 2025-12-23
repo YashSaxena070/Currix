@@ -33,9 +33,8 @@ build/
 .vscode/
 
 ### Sensitive Configuration Files ###
-src/main/resources/application.yaml
 *.env
-src/main/resources/application-env.txt
+application-env.properties
 .env.local
 .env.*.local
 output.txt
