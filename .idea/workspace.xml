@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d8a228fa-476b-43f1-a3d3-7423ed61f8b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ai-resume-analyzer/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/src/main/java/com/yash/AI_Resume/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai-resume-analyzer/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/ai-resume-analyzer/Dockerfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +135,7 @@
       <workItem from="1766409264254" duration="1365000" />
       <workItem from="1766411289251" duration="2267000" />
       <workItem from="1766413583629" duration="941000" />
-      <workItem from="1766476394266" duration="6413000" />
+      <workItem from="1766476394266" duration="7785000" />
     </task>
     <servers />
   </component>
