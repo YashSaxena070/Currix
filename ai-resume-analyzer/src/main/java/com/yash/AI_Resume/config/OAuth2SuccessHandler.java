@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final OAuth2LoginService loginService;
@@ -41,6 +43,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         ResponseEntity<AuthResponse> loginResponse = loginService.login(oAuth2User, registerationId);
 
         String jwtToken = loginResponse.getBody().getToken();
+        log.info("OAuth login success, redirecting to frontend");
 
         response.sendRedirect(frontendUrl + "/oauth/callback?token=" + jwtToken);
 
