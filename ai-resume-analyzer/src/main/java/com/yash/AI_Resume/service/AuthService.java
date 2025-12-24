@@ -206,16 +206,11 @@ public class AuthService {
         User user = userRespository.findByProviderIdAndProviderType(providerId, providerType).orElse(null);
         String email = oAuth2User.getAttribute("email");
 
-        if (user == null) {
-            // Try to find by email if provider ID lookup failed
-            if (email != null) {
-                user = userRespository.findByEmail(email).orElse(null);
-                if (user != null) {
-                    // Link existing account
-                    user.setProviderId(providerId);
-                    user.setProviderType(providerType);
-                    userRespository.save(user);
-                }
+        if (user == null && email != null) {
+            user = userRespository.findByEmail(email).orElse(null);
+            if (user != null) {
+                user.setProviderId(providerId);
+                user.setProviderType(providerType);
             }
         }
 
@@ -224,6 +219,8 @@ public class AuthService {
             String username = JwtUtil.determineUsernameFromOauth2User(oAuth2User, registerationId, providerId);
             user = signUpInternal(new RegisterRequest(username, email, null, null), providerType, providerId);
         }
+
+        user = userRespository.save(user);
 
         AuthResponse loginResponseDto = new AuthResponse(user.getId(), user.getName(), user.getEmail(),
                 user.getProfileImageUrl(), user.getSubscriptionPlan(), user.isEmailVerified(),

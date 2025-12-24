@@ -37,7 +37,11 @@ public class SecurityConfig {
                                                                 "/api/auth/upload-image", "/actuator/**",
                                                                 "/api/auth/resend-verification")
                                                 .permitAll()
-                                                .anyRequest().authenticated())
+                                                .requestMatchers(
+                                                      "/favicon.ico",
+                                                        "/error"
+                                                ).permitAll()
+                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

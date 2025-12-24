@@ -31,23 +31,18 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
-        if (!(authentication instanceof OAuth2AuthenticationToken oauthToken)) {
-            response.sendRedirect(frontendUrl + "/login?error=oauth");
-            return;
-        }
+        OAuth2AuthenticationToken token =
+                (OAuth2AuthenticationToken) authentication;
 
-        OAuth2User oAuth2User = oauthToken.getPrincipal();
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        String registerationId = oauthToken.getAuthorizedClientRegistrationId();
+        String registerationId = token.getAuthorizedClientRegistrationId();
 
         ResponseEntity<AuthResponse> loginResponse = loginService.login(oAuth2User, registerationId);
 
         String jwtToken = loginResponse.getBody().getToken();
 
-        // encoded token
-        String encodedToken = URLEncoder.encode(jwtToken, StandardCharsets.UTF_8);
-
-        response.sendRedirect(frontendUrl + "/oauth/callback?token=" + encodedToken);
+        response.sendRedirect(frontendUrl + "/oauth/callback?token=" + jwtToken);
 
     }
 }
