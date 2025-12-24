@@ -38,6 +38,12 @@ public class AuthController {
 
     }
 
+    @GetMapping("/health")
+        public String health() {
+        return "OK";
+    }
+
+
     @GetMapping(VERIFY_EMAIL)
     public ResponseEntity<AuthResponse> verifyEmail(@RequestParam String token) {
         log.info("Inside AuthController - verifyEmail(): {}", token);

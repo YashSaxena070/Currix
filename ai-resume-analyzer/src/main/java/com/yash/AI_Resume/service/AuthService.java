@@ -174,7 +174,7 @@ public class AuthService {
     }
 
     public User signUpInternal(RegisterRequest signupRequestDto, AuthProviderType authProviderType, String providerId) {
-        User user = userRespository.findByUsername(signupRequestDto.getName())
+        User user = userRespository.findByEmail(signupRequestDto.getEmail())
                 .orElse(null);
 
         if (user != null) {

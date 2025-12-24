@@ -16,6 +16,4 @@ public interface UserRespository extends MongoRepository<User, String> {
     Optional<User> findByVerificationToken(String verificationToken);
 
     Optional<User> findByProviderIdAndProviderType(String providerId, AuthProviderType providerType);
-
-    Optional<User> findByUsername(String username);
 }
