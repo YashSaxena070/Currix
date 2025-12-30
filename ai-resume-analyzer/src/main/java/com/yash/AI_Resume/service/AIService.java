@@ -29,6 +29,10 @@ public class AIService {
     private final ObjectMapper objectMapper;
 
     public AtsResult analyze(String resumeText) {
+        if (resumeText == null || resumeText.trim().length() < 50) {
+            throw new RuntimeException("Resume text is empty or invalid");
+        }
+
         String url = "https://api.groq.com/openai/v1/chat/completions";
 
         HttpHeaders headers = new HttpHeaders();
@@ -48,18 +52,26 @@ public class AIService {
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
 
+            log.info("Groq response: {}", response.getBody());
+
             String json = (String) ((Map<String, Object>) ((Map<String, Object>) ((List<?>) response.getBody()
                     .get("choices"))
                     .get(0))
                     .get("message"))
                     .get("content");
 
+            log.info("Raw AI response: {}", json);
+
+            if (!json.trim().startsWith("{")) {
+                throw new RuntimeException("Invalid JSON returned by AI");
+            }
+
             // 🔥 Convert JSON → DTO
             return objectMapper.readValue(json, AtsResult.class);
 
         } catch (Exception e) {
             log.error("Groq API error", e);
-            throw new RuntimeException("Error analyzing resume");
+            throw new RuntimeException(e.getMessage(),e);
         }
     }
 
