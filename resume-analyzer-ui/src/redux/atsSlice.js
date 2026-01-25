@@ -4,9 +4,27 @@ import { API_PATHS } from "../utils/apiPaths";
 
 export const analyzeResume = createAsyncThunk(
     "ats/analyze",
-    async(formData) => {
-        const res = await axiosInstance.post(API_PATHS.RESUME.ANALYZE, formData);
-        return res.data;
+    async (formData, { rejectWithValue }) => {
+        try {
+            const res = await axiosInstance.post(API_PATHS.RESUME.ANALYZE, formData);
+            return res.data;
+        } catch (err) {
+            // 2. Custom error handling logic
+            if (err.response) {
+                // The server responded with a status code outside the 2xx range
+                // You can return a custom string here to hide the status code
+                // If your backend sends a specific error message, use err.response.data.message
+                return rejectWithValue(
+                    err.response.data?.message || "We encountered an issue analyzing your resume. Please try again."
+                );
+            } else if (err.request) {
+                // The request was made but no response was received
+                return rejectWithValue("Network error. Please check your internet connection.");
+            } else {
+                // Something happened in setting up the request
+                return rejectWithValue("An unexpected error occurred.");
+            }
+        }
     }
 );
 
@@ -36,6 +54,7 @@ const atsSlice = createSlice({
         builder
             .addCase(analyzeResume.pending, (state) => {
                 state.isLoading = true;
+                state.error = null;
             })
             .addCase(analyzeResume.fulfilled, (state,action) => {
                 state.isLoading = false;
@@ -43,7 +62,7 @@ const atsSlice = createSlice({
             })
             .addCase(analyzeResume.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = action.error.message;
+                state.error = action.payload || "Something went wrong. Please try again.";
             });
     }
 });
