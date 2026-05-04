@@ -136,11 +136,4 @@ src/main/java/com/yash/AI_Resume/
 └── utils/          # Utility classes
 ```
 
-## License
-
-[Add your license here]
-
-## Contributing
-
-[Add contribution guidelines here]
 
