@@ -32,4 +32,5 @@ public class AppConstants {
     public static final String ORDER_DETAILS = "/order/{orderId}";
 
     public static final String ANALYZE = "/analyze";
+    public static final String REGENERATE_PHRASE = "/regenerate-phrase";
 }

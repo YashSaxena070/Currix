@@ -134,6 +134,77 @@ public class AIService {
         return trimmed;
     }
 
+    public String regeneratePhrase(String originalText, String section, String context) {
+        if (originalText == null || originalText.trim().isEmpty()) {
+            throw new RuntimeException("Original text cannot be empty");
+        }
+
+        if (API_KEY == null || API_KEY.trim().isEmpty()) {
+            throw new RuntimeException("Groq API Key is not configured in .env");
+        }
+
+        String prompt = """
+                You are an elite ATS resume optimizer and engineering career coach.
+                Rewrite the following bullet point or resume line to maximize its ATS score, recruiter appeal, and impact.
+
+                Rules:
+                1. Start with a powerful past-tense action verb (e.g., Engineered, Architected, Designed, Orchestrated, Optimized, Spearheaded).
+                2. Add realistic, quantifiable impact (e.g., latency, throughput, percentages, benchmark metrics, failure reduction).
+                3. Weave in high-demand technical keywords relevant to the section.
+                4. Keep it concise (1-2 sentences maximum), professional, and active voice.
+                5. Return ONLY the rewritten bullet/phrase directly. DO NOT include markdown, quotation marks, or explanations.
+
+                Section: %s
+                Context: %s
+                Line to improve:
+                %s
+                """.formatted(
+                        section != null && !section.isBlank() ? section : "General Experience",
+                        context != null && !context.isBlank() ? context : "Software Engineering",
+                        originalText.trim()
+                );
+
+        String url = groqApiUrl != null && !groqApiUrl.trim().isEmpty() 
+                ? groqApiUrl 
+                : "https://api.groq.com/openai/v1/chat/completions";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + API_KEY.trim());
+
+        String effectiveModel = (modelName != null && !modelName.trim().isEmpty()) 
+                ? modelName.trim() 
+                : "llama-3.3-70b-versatile";
+
+        Map<String, Object> body = Map.of(
+                "model", effectiveModel,
+                "messages", List.of(
+                        Map.of("role", "system", "content", "You are an ATS resume optimization engine. Return ONLY the single rewritten line directly without formatting, quotes, or preamble."),
+                        Map.of("role", "user", "content", prompt)
+                ),
+                "temperature", 0.6);
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+            if (response.getBody() == null || !response.getBody().containsKey("choices")) {
+                throw new RuntimeException("Empty response from AI");
+            }
+            List<?> choices = (List<?>) response.getBody().get("choices");
+            Map<String, Object> firstChoice = (Map<String, Object>) choices.get(0);
+            Map<String, Object> message = (Map<String, Object>) firstChoice.get("message");
+            String result = (String) message.get("content");
+            if (result != null) {
+                return result.trim().replaceAll("^\"|\"$", "").replaceAll("^•\\s*", "");
+            }
+            return originalText;
+        } catch (Exception e) {
+            log.error("Failed to regenerate phrase", e);
+            throw new RuntimeException("Failed to regenerate phrase: " + e.getMessage(), e);
+        }
+    }
+
     private String buildPrompt(String resumeText) {
         return """
                 You are an expert ATS (Applicant Tracking System) resume analyzer.
@@ -145,21 +216,45 @@ public class AIService {
                   "atsScore": 0,
                   "strengths": [],
                   "gaps": ["The uploaded file does not appear to be a valid resume."],
-                  "fixes": ["Please upload a valid professional resume."]
+                  "fixes": [
+                    {
+                      "id": "1",
+                      "section": "General",
+                      "priority": "High priority",
+                      "originalText": "Invalid file uploaded",
+                      "reason": "The file cannot be parsed as a professional resume.",
+                      "suggestedText": "Please upload a valid PDF resume with work history and skills."
+                    }
+                  ]
                 }
 
                 If it IS a resume, analyze it critically against modern industry standards.
-                - Calculate a DYNAMIC `atsScore` (0-100) based strictly on the content quality, keywords, formatting (implied), and completeness. DO NOT default to 82 or any other static number.
+                - Calculate a DYNAMIC `atsScore` (0-100) based strictly on content quality, keywords, formatting (implied), and completeness.
                 - `strengths`: List 3-5 strong points.
                 - `gaps`: List 3-5 missing critical elements or weaknesses.
-                - `fixes`: List 3-5 actionable improvements.
+                - `fixes`: List 3-6 high-impact actionable improvements. Each fix MUST include:
+                   * `id`: sequential string ("1", "2", "3", etc.)
+                   * `section`: Section name and target (e.g. "Experience: SDE Intern - Explified", "Projects: FluxPay", "Summary")
+                   * `priority`: "High priority", "Medium priority", or "Low priority"
+                   * `originalText`: The exact phrase, bullet, date, or claim in the resume that needs to be changed.
+                   * `reason`: Detailed explanation of why it is penalized or how it hurts recruiter perception.
+                   * `suggestedText`: An improved, high-scoring ATS-optimized replacement line with strong action verbs, quantifiable metrics, or clear role targeting that immediately increases the score.
 
                 Return ONLY valid JSON in this format:
                 {
                   "atsScore": number,
                   "strengths": [string],
                   "gaps": [string],
-                  "fixes": [string]
+                  "fixes": [
+                    {
+                      "id": "1",
+                      "section": "Experience: SDE Intern - Explified",
+                      "priority": "High priority",
+                      "originalText": "June 2026–Present dates are future-dated relative to current date",
+                      "reason": "Future dates make internship status unclear and cause timeline contradiction penalties in ATS parsers.",
+                      "suggestedText": "June 2025 – Present (or 'Incoming SDE Intern - Explified | Starting June 2026')"
+                    }
+                  ]
                 }
 
                 Resume Text:

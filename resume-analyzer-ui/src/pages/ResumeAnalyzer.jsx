@@ -2,20 +2,92 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { analyzeResume, resetAnalysis } from "../redux/atsSlice";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, FileText, CheckCircle, AlertTriangle, Wrench, RefreshCw, Loader2, X } from "lucide-react";
+import { Upload, FileText, CheckCircle, AlertTriangle, Wrench, RefreshCw, Loader2, X, Sparkles, Copy, Check, ArrowRight } from "lucide-react";
 import DarkVeil from "../components/Effects/DarkVeil";
+import axiosInstance from "../utils/axiosInstance";
+import { API_PATHS } from "../utils/apiPaths";
 
 const ResumeAnalyzer = () => {
   const dispatch = useDispatch();
   const { isLoading, atsScore, strengths, gaps, fixes, error } = useSelector((state) => state.ats);
   const [file, setFile] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
+  const [localFixes, setLocalFixes] = useState([]);
+  const [regeneratingIndex, setRegeneratingIndex] = useState(null);
+  const [copiedIndex, setCopiedIndex] = useState(null);
 
   useEffect(() => {
     return () => {
       if (fileUrl) URL.revokeObjectURL(fileUrl);
     };
   }, [fileUrl]);
+
+  useEffect(() => {
+    if (fixes && fixes.length > 0) {
+      setLocalFixes(
+        fixes.map((item, idx) => {
+          if (typeof item === "string") {
+            return {
+              id: String(idx + 1),
+              section: "Resume Optimization",
+              priority: idx < 2 ? "High priority" : "Medium priority",
+              originalText: item,
+              reason: "Phrasing needs improvement to maximize ATS keyword density and recruiter impact.",
+              suggestedText: item,
+            };
+          }
+          return {
+            id: item.id || String(idx + 1),
+            section: item.section || "Resume Section",
+            priority: item.priority || "Medium priority",
+            originalText: item.originalText || item.problem || "",
+            reason: item.reason || "",
+            suggestedText: item.suggestedText || item.originalText || "",
+          };
+        })
+      );
+    } else {
+      setLocalFixes([]);
+    }
+  }, [fixes]);
+
+  const handleRegenerate = async (index) => {
+    const targetFix = localFixes[index];
+    if (!targetFix) return;
+
+    setRegeneratingIndex(index);
+    try {
+      const response = await axiosInstance.post(API_PATHS.RESUME.REGENERATE_PHRASE, {
+        originalText: targetFix.originalText || targetFix.suggestedText,
+        section: targetFix.section,
+        context: targetFix.reason,
+      });
+
+      if (response.data?.regeneratedText) {
+        setLocalFixes((prev) => {
+          const updated = [...prev];
+          updated[index] = {
+            ...updated[index],
+            suggestedText: response.data.regeneratedText,
+          };
+          return updated;
+        });
+      }
+    } catch (err) {
+      console.error("Failed to regenerate phrase", err);
+    } finally {
+      setRegeneratingIndex(null);
+    }
+  };
+
+  const handleCopy = (text, index) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
+    setTimeout(() => {
+      setCopiedIndex(null);
+    }, 2000);
+  };
 
   const handleUpload = (uploadedFile) => {
     if (!uploadedFile) return;
@@ -240,18 +312,112 @@ const ResumeAnalyzer = () => {
 
                   {/* Fixes (Priority) */}
                   <div>
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                      <Wrench className="w-5 h-5 text-blue-400" />
-                      Recommended Fixes
-                    </h3>
-                    <div className="space-y-3">
-                      {fixes.map((item, i) => (
-                        <div key={i} className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl flex gap-3">
-                          <span className="mt-1 w-2 h-2 bg-blue-500 rounded-full shrink-0" />
-                          <p className="text-slate-300 text-sm leading-relaxed">{item}</p>
-                        </div>
-                      ))}
-                      {fixes.length === 0 && <p className="text-slate-500 italic">No critical fixes needed!</p>}
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <Wrench className="w-5 h-5 text-blue-400" />
+                        Top Fixes & Smart Edits
+                      </h3>
+                      <span className="text-xs text-slate-400">Ordered by score lift</span>
+                    </div>
+
+                    <div className="space-y-4">
+                      {localFixes.map((item, i) => {
+                        const isHigh = item.priority?.toLowerCase().includes("high");
+                        const isMed = item.priority?.toLowerCase().includes("medium");
+
+                        return (
+                          <div 
+                            key={i} 
+                            className="bg-slate-900/80 border border-slate-800 hover:border-slate-700 transition-all rounded-2xl p-5 shadow-lg relative overflow-hidden"
+                          >
+                            {/* Card Top: Number, Section, Priority */}
+                            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                              <div className="flex items-center gap-3">
+                                <span className="w-7 h-7 rounded-full bg-blue-600/20 text-blue-400 text-xs font-bold flex items-center justify-center shrink-0 border border-blue-500/30">
+                                  {i + 1}
+                                </span>
+                                <h4 className="font-semibold text-white text-base">
+                                  {item.section || `Issue #${i + 1}`}
+                                </h4>
+                              </div>
+                              <span 
+                                className={`text-xs px-2.5 py-1 rounded-full font-medium border ${
+                                  isHigh 
+                                    ? "bg-rose-500/15 text-rose-300 border-rose-500/30" 
+                                    : isMed 
+                                    ? "bg-amber-500/15 text-amber-300 border-amber-500/30" 
+                                    : "bg-blue-500/15 text-blue-300 border-blue-500/30"
+                                }`}
+                              >
+                                {item.priority || "Medium priority"}
+                              </span>
+                            </div>
+
+                            {/* Section 1: Needs to be changed */}
+                            {item.originalText && (
+                              <div className="mb-3 bg-slate-950/70 border border-rose-500/20 rounded-xl p-3">
+                                <span className="text-[11px] uppercase tracking-wider text-rose-400 font-bold block mb-1">
+                                  Needs to be changed:
+                                </span>
+                                <p className="text-slate-300 text-sm italic">
+                                  "{item.originalText}"
+                                </p>
+                              </div>
+                            )}
+
+                            {/* Section 2: Why it lowers score */}
+                            {item.reason && (
+                              <p className="text-slate-400 text-xs leading-relaxed mb-3">
+                                <strong className="text-slate-300">Impact on Score:</strong> {item.reason}
+                              </p>
+                            )}
+
+                            {/* Section 3: High-Score Replacement */}
+                            <div className="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-3.5 mb-3">
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-[11px] uppercase tracking-wider text-emerald-400 font-bold flex items-center gap-1.5">
+                                  <Sparkles className="w-3.5 h-3.5" /> Suggested ATS-Optimized Replacement:
+                                </span>
+                              </div>
+                              <p className="text-emerald-200 text-sm leading-relaxed font-medium">
+                                {item.suggestedText || item.originalText}
+                              </p>
+                            </div>
+
+                            {/* Card Footer: Action Buttons */}
+                            <div className="flex items-center justify-end gap-2 pt-1 border-t border-slate-800/80">
+                              <button
+                                onClick={() => handleRegenerate(i)}
+                                disabled={regeneratingIndex === i}
+                                className="px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 hover:border-blue-400 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                title="Click to regenerate an alternative high-impact line with AI"
+                              >
+                                <RefreshCw className={`w-3.5 h-3.5 ${regeneratingIndex === i ? "animate-spin text-blue-400" : ""}`} />
+                                {regeneratingIndex === i ? "Regenerating..." : "Regenerate Line"}
+                              </button>
+
+                              <button
+                                onClick={() => handleCopy(item.suggestedText || item.originalText, i)}
+                                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer"
+                                title="Copy replacement to clipboard"
+                              >
+                                {copiedIndex === i ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                    <span className="text-emerald-400 font-semibold">Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3.5 h-3.5 text-slate-400" />
+                                    <span>Copy Line</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {localFixes.length === 0 && <p className="text-slate-500 italic">No critical fixes needed!</p>}
                     </div>
                   </div>
 

@@ -102,4 +102,13 @@ public class ResumeController {
         return aiService.analyze(resumeText);
     }
 
+    @PostMapping(REGENERATE_PHRASE)
+    public ResponseEntity<?> regeneratePhrase(@RequestBody Map<String, String> request) {
+        String originalText = request.get("originalText");
+        String section = request.get("section");
+        String context = request.get("context");
+        String regeneratedText = aiService.regeneratePhrase(originalText, section, context);
+        return ResponseEntity.ok(Map.of("regeneratedText", regeneratedText));
+    }
+
 }
